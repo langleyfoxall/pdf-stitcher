@@ -3,6 +3,7 @@
 namespace LangleyFoxall\PdfStitcher;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * Class PdfStitcher
@@ -81,7 +82,7 @@ class PdfStitcher
     private function getShellCommand($filePath): string
     {
         if (!$this->ghostscriptInstalled()) {
-            throw new \RuntimeException('Ghostscript (`gs`) is not installed. Please install it.');
+            throw new RuntimeException('Ghostscript (`gs`) is not installed. Please install it.');
         }
 
         $command = 'gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile='.$filePath.' ';
@@ -97,6 +98,6 @@ class PdfStitcher
      */
     private function ghostscriptInstalled(): bool
     {
-        return !empty(shell_exec('which gs'));
+        return !empty(shell_exec('command -v gs'));
     }
 }
