@@ -85,8 +85,8 @@ class PdfStitcher
             throw new RuntimeException('Ghostscript (`gs`) is not installed. Please install it.');
         }
 
-        $command = 'gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile='.$filePath.' ';
-        $command .= implode(' ', $this->inputFiles);
+        $command = 'gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile='.Utils::quote($filePath).' ';
+        $command .= implode(' ', array_map([Utils::class, 'quote'], $this->inputFiles));
 
         return $command;
     }
