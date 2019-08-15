@@ -1,0 +1,20 @@
+{
+    "name": "langleyfoxall/pdf-stitcher",
+    "description": "Stitches together multiple PDFs",
+    "type": "library",
+    "license": "LGPL-3.0-only",
+    "authors": [
+        {
+            "name": "Jordan Hall",
+            "email": "jordan@langleyfoxall.co.uk"
+        }
+    ],
+    "require": {
+        "php": ">=7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "LangleyFoxall\\PdfStitcher\\": "src/"
+        }
+    }
+}
