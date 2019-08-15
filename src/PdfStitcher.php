@@ -4,10 +4,25 @@ namespace LangleyFoxall\PdfStitcher;
 
 use InvalidArgumentException;
 
+/**
+ * Class PdfStitcher
+ * @package LangleyFoxall\PdfStitcher
+ */
 class PdfStitcher
 {
+    /**
+     * Array of input PDF files to be stitched together.
+     *
+     * @var array
+     */
     private $inputFiles = [];
 
+    /**
+     * Add a PDF to the list of files to be stitched together.
+     *
+     * @param string $filePath
+     * @return PdfStitcher
+     */
     public function addPdf(string $filePath): self
     {
         if (!file_exists($filePath) || !is_readable(!$filePath)) {
@@ -27,6 +42,12 @@ class PdfStitcher
         return $this;
     }
 
+    /**
+     * Adds an array of PDFs to the list of files to be stitched together.
+     *
+     * @param array $filePaths
+     * @return PdfStitcher
+     */
     public function addPdfs(array $filePaths): self
     {
         foreach ($filePaths as $filePath) {
@@ -36,6 +57,11 @@ class PdfStitcher
         return $this;
     }
 
+    /**
+     * Save out the stitched together PDF.
+     *
+     * @param string $filePath
+     */
     public function save(string $filePath): void
     {
         if (file_exists(dirname($filePath))) {
@@ -45,6 +71,13 @@ class PdfStitcher
         shell_exec($this->getShellCommand($filePath));
     }
 
+    /**
+     * Build and returns a Ghostscript command to stitch together the input PDFs
+     * and save the result to specified output file path.
+     *
+     * @param $filePath
+     * @return string
+     */
     private function getShellCommand($filePath): string
     {
         if (!$this->ghostscriptInstalled()) {
@@ -57,6 +90,11 @@ class PdfStitcher
         return $command;
     }
 
+    /**
+     * Checks if the the Ghostscript (`gs`) command line tool is installed.
+     *
+     * @return bool
+     */
     private function ghostscriptInstalled(): bool
     {
         return !empty(shell_exec('which gs'));
