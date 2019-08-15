@@ -65,7 +65,7 @@ class PdfStitcher
      */
     public function save(string $filePath): void
     {
-        if (file_exists(dirname($filePath))) {
+        if (!file_exists(dirname($filePath))) {
             throw new InvalidArgumentException('Specified file\'s directory does not exist: '.$filePath);
         }
 
