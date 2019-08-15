@@ -26,7 +26,7 @@ class PdfStitcher
      */
     public function addPdf(string $filePath): self
     {
-        if (!file_exists($filePath) || !is_readable(!$filePath)) {
+        if (!file_exists($filePath) || !is_readable($filePath)) {
             throw new InvalidArgumentException('Specified file does not exist or can not be read: '.$filePath);
         }
 
