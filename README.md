@@ -25,7 +25,7 @@ See the following basic usage example.
 ```php
 (new PdfStitcher)
     ->addPdf('firstDocument.pdf')
-    ->addPdfs(['secondDocument.pdf', 'yetAnotherDocument.pdf')
+    ->addPdfs(['secondDocument.pdf', 'yetAnotherDocument.pdf'])
     ->save('destinationDocument.pdf');
 ```
 
