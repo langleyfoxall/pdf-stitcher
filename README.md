@@ -32,3 +32,11 @@ See the following basic usage example.
 This will take in three input PDFs, stitch them together, and save out
 the result to `destinationDocument.pdf`. The documents will be stitched
 together in the order they are added.
+
+### Where Ghostscript is in an unusual location
+
+A path to a Ghostscript executable can be passed into the `PdfStitcher` constructor:
+
+```php
+new PdfStitcher('a/path/to/a/gs/executable')
+```

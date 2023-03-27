@@ -19,6 +19,23 @@ class PdfStitcher
     private $inputFiles = [];
 
     /**
+     * A path to a Ghostscript executable to use instead of the default "gs".
+     * 
+     * @var ?string
+     */
+    private $overriddenGhostscriptExecutablePath = null;
+
+    /**
+     * Creates a new instance of the PDF stitcher.
+     * 
+     * @param ?string $overriddenGhostscriptExecutablePath A path to a Ghostscript executable to use instead of the default "gs".
+     */
+    public function __construct($overriddenGhostscriptExecutablePath = null)
+    {
+        $this->overriddenGhostscriptExecutablePath = $overriddenGhostscriptExecutablePath;
+    }
+
+    /**
      * Add a PDF to the list of files to be stitched together.
      *
      * @param string $filePath
@@ -81,11 +98,17 @@ class PdfStitcher
      */
     private function getShellCommand($filePath): string
     {
-        if (!$this->ghostscriptInstalled()) {
-            throw new RuntimeException('Ghostscript (`gs`) is not installed. Please install it.');
+        if ($this->overriddenGhostscriptExecutablePath === null) {
+            if (!$this->ghostscriptInstalled()) {
+                throw new RuntimeException('Ghostscript (`gs`) is not installed. Please install it.');
+            }
+
+            $command = 'gs';
+        } else {
+            $command = $this->overriddenGhostscriptExecutablePath;
         }
 
-        $command = 'gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile='.Utils::quote($filePath).' ';
+        $command .= ' -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile='.Utils::quote($filePath).' ';
         $command .= implode(' ', array_map([Utils::class, 'quote'], $this->inputFiles));
 
         return $command;
