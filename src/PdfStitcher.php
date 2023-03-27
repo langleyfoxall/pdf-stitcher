@@ -86,7 +86,7 @@ class PdfStitcher
             throw new InvalidArgumentException('Specified file\'s directory does not exist: '.$filePath);
         }
 
-        shell_exec($this->getShellCommand($filePath));
+        $this->runShellCommand($this->getShellCommand($filePath));
     }
 
     /**
@@ -122,5 +122,37 @@ class PdfStitcher
     private function ghostscriptInstalled(): bool
     {
         return !empty(shell_exec('command -v gs'));
+    }
+
+    private function runShellCommand(string $command): void
+    {
+      $process = proc_open(
+        $command,
+        [
+          ['pipe', 'r'],
+          ['pipe', 'w'],
+          ['pipe', 'w'],
+        ],
+        $pipes
+      );
+  
+      if ($process === false) {
+        throw new RuntimeException('Failed to open a process to stitch PDFs.');
+      }
+  
+      // STDIN.
+      fclose($pipes[0]);
+  
+      $stdout = stream_get_contents($pipes[1]);
+      fclose($pipes[1]);
+  
+      $stderr = stream_get_contents($pipes[2]);
+      fclose($pipes[2]);
+  
+      $exitCode = proc_close($process);
+  
+      if ($exitCode !== 0 || $stderr !== '') {
+        throw new RuntimeException('Failed to run shell command "'.$command.'"; exit code '.$exitCode.', stdout "'.$stdout.'", stderr "'.$stderr.'".');
+      }
     }
 }
