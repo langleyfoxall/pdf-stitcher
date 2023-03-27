@@ -108,7 +108,7 @@ class PdfStitcher
             $command = $this->overriddenGhostscriptExecutablePath;
         }
 
-        $command = ' -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile='.Utils::quote($filePath).' ';
+        $command .= ' -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile='.Utils::quote($filePath).' ';
         $command .= implode(' ', array_map([Utils::class, 'quote'], $this->inputFiles));
 
         return $command;
