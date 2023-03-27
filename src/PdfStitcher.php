@@ -30,7 +30,7 @@ class PdfStitcher
      * 
      * @param ?string $overriddenGhostscriptExecutablePath A path to a Ghostscript executable to use instead of the default "gs".
      */
-    public function __construct($overriddenGhostscriptExecutablePath)
+    public function __construct($overriddenGhostscriptExecutablePath = null)
     {
         $this->overriddenGhostscriptExecutablePath = $overriddenGhostscriptExecutablePath;
     }
