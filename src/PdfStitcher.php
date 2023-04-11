@@ -12,11 +12,11 @@ use RuntimeException;
 class PdfStitcher
 {
     /**
-     * Array of input PDF files to be stitched together.
+     * Array of arguments to be given to "gs".
      *
      * @var array
      */
-    private $inputFiles = [];
+    private $arguments = [];
 
     /**
      * A path to a Ghostscript executable to use instead of the default "gs".
@@ -39,9 +39,10 @@ class PdfStitcher
      * Add a PDF to the list of files to be stitched together.
      *
      * @param string $filePath
+     * @param ?array $pageIndices
      * @return PdfStitcher
      */
-    public function addPdf(string $filePath): self
+    public function addPdf(string $filePath, ?array $pageIndices = null): self
     {
         if (!file_exists($filePath) || !is_readable($filePath)) {
             throw new InvalidArgumentException('Specified file does not exist or can not be read: '.$filePath);
@@ -55,7 +56,33 @@ class PdfStitcher
             throw new InvalidArgumentException('Specified file is not a PDF: '.$filePath);
         }
 
-        $this->inputFiles[] = $filePath;
+        if ($pageIndices !== null) {
+            if (count($pageIndices) > 0) {
+                $previous = -1;
+
+                foreach ($pageIndices as $pageIndex) {
+                    if (! ctype_digit(strval($pageIndex)) ) {
+                        throw new InvalidArgumentException('Invalid page index "'.$pageIndex.'".');
+                    }
+
+                    if ($pageIndex === $previous) {
+                        throw new InvalidArgumentException('Duplicate page index "'.$pageIndex.'".');
+                    }
+
+                    if ($pageIndex < $previous) {
+                        throw new InvalidArgumentException('Misordered page index "'.$pageIndex.'".');
+                    }
+
+                    $previous = $pageIndex;
+                }
+
+                $this->arguments[] = '-sPageList='.implode(',', array_map(fn (int $pageIndex) => $pageIndex + 1, $pageIndices));
+                $this->arguments[] = Utils::quote($filePath);
+            }
+        } else {
+            $this->arguments[] = '-sPageList=1-';
+            $this->arguments[] = Utils::quote($filePath);
+        }
 
         return $this;
     }
@@ -109,7 +136,7 @@ class PdfStitcher
         }
 
         $command .= ' -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile='.Utils::quote($filePath).' ';
-        $command .= implode(' ', array_map([Utils::class, 'quote'], $this->inputFiles));
+        $command .= implode(' ', $this->arguments);
 
         return $command;
     }
