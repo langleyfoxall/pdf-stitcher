@@ -50,3 +50,22 @@ new PdfStitcher(null, '-dNEWPDF=false')
 ```
 
 These will NOT be escaped in any way.
+
+### Including only specific pages from a PDF
+
+You may optionally give an array of page indices when adding a PDF:
+
+```php
+(new PdfStitcher)
+    ->addPdf('firstDocument.pdf', [0, 2, 3, 5])
+    ->save('destinationDocument.pdf');
+```
+
+Only the page numbers you list will be included.
+
+The following will be rejected:
+
+- Non-integer page numbers.
+- Page numbers less than zero.
+- Duplicate page numbers (e.g. 1, 3, 3, 5, 7).
+- Misordered page numbers (e.g. 1, 5, 3, 7).
