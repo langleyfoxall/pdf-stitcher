@@ -41,6 +41,16 @@ A path to a Ghostscript executable can be passed into the `PdfStitcher` construc
 new PdfStitcher('a/path/to/a/gs/executable')
 ```
 
+### Additional Ghostscript arguments
+
+Additional Ghostscript arguments can be passed into the `PdfStitcher` constructor:
+
+```php
+new PdfStitcher(null, '-dNEWPDF=false')
+```
+
+These will NOT be escaped in any way.
+
 ### Including only specific pages from a PDF
 
 You may optionally give an array of page indices when adding a PDF:

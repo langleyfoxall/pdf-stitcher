@@ -25,14 +25,21 @@ class PdfStitcher
      */
     private $overriddenGhostscriptExecutablePath = null;
 
+    private $extraGhostscriptArguments = null;
+
     /**
      * Creates a new instance of the PDF stitcher.
      * 
      * @param ?string $overriddenGhostscriptExecutablePath A path to a Ghostscript executable to use instead of the default "gs".
+     * @param ?string $extraGhostscriptArguments Extra Ghostscript arguments to be included in any commands executed.  No escaping will be performed.
      */
-    public function __construct($overriddenGhostscriptExecutablePath = null)
+    public function __construct(
+        $overriddenGhostscriptExecutablePath = null,
+        $extraGhostscriptArguments = null
+    )
     {
         $this->overriddenGhostscriptExecutablePath = $overriddenGhostscriptExecutablePath;
+        $this->$extraGhostscriptArguments = $extraGhostscriptArguments;
     }
 
     /**
@@ -133,6 +140,10 @@ class PdfStitcher
             $command = 'gs';
         } else {
             $command = $this->overriddenGhostscriptExecutablePath;
+        }
+
+        if ($this->extraGhostscriptArguments !== null) {
+            $command .= ' '.$this->extraGhostscriptArguments;
         }
 
         $command .= ' -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile='.Utils::quote($filePath).' ';
