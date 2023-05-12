@@ -40,3 +40,13 @@ A path to a Ghostscript executable can be passed into the `PdfStitcher` construc
 ```php
 new PdfStitcher('a/path/to/a/gs/executable')
 ```
+
+### Additional Ghostscript arguments
+
+Additional Ghostscript arguments can be passed into the `PdfStitcher` constructor:
+
+```php
+new PdfStitcher(null, '-dNEWPDF=false')
+```
+
+These will NOT be escaped in any way.
