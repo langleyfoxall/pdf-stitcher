@@ -39,7 +39,7 @@ class PdfStitcher
     )
     {
         $this->overriddenGhostscriptExecutablePath = $overriddenGhostscriptExecutablePath;
-        $this->$extraGhostscriptArguments = $extraGhostscriptArguments;
+        $this->extraGhostscriptArguments = $extraGhostscriptArguments;
     }
 
     /**
